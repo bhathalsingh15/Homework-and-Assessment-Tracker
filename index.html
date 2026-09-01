@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Homework & Assessment Tracker</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><span class="brand-icon">🎓</span><span><b>Homework & Assessment</b><small>Tracker</small></span></div>
+  <div class="actions">
+    <button class="icon-btn" id="themeBtn" title="Toggle dark mode">☾</button>
+    <button class="icon-btn" id="reminderBtn" title="Reminders">🔔</button>
+  </div>
+</header>
+
+<main class="container">
+  <section id="home" class="page active">
+    <div class="heading">
+      <div><h1>Hi Student 👋</h1><p id="summary">Stay organised and keep track of your work.</p></div>
+      <button class="primary" onclick="openAddTask()">＋ Quick Add Task</button>
+    </div>
+
+    <div class="streak"><span>🔥</span><div><small>On-time streak</small><b>2 tasks in a row</b><p>Keep completing tasks on time.</p></div></div>
+
+    <div class="stats">
+      <article><span>Pending Tasks</span><b id="pendingCount">0</b></article>
+      <article><span>Due Today</span><b id="todayCount">0</b></article>
+      <article><span>Completed</span><b id="completedCount">0</b></article>
+      <article><span>Overdue</span><b id="overdueCount">0</b></article>
+    </div>
+
+    <div class="grid2">
+      <section class="panel"><div class="panel-head"><h2>Upcoming tasks</h2><button class="text" onclick="show('tasks')">View all</button></div><div id="upcoming"></div></section>
+      <aside>
+        <section class="panel"><h2>Progress summary</h2><div class="progress-circle"><span id="progressPct">0%</span></div><p id="progressText"></p><button class="text" onclick="show('progress')">See full progress →</button></section>
+        <section class="panel"><h2>Reminders</h2><p id="reminderSummary"></p><button class="text" onclick="show('reminders')">Open reminders →</button></section>
+      </aside>
+    </div>
+  </section>
+
+  <section id="tasks" class="page">
+    <div class="heading"><div><h1>My Tasks</h1><p>Manage homework and assessment tasks.</p></div><button class="primary" onclick="openAddTask()">＋ Add Task</button></div>
+    <div class="panel filters">
+      <input id="search" placeholder="Search tasks" oninput="renderTasks()">
+      <select id="subject" onchange="renderTasks()"><option value="">All subjects</option><option>English</option><option>Mathematics</option><option>Biology</option><option>Computing</option><option>Geography</option><option>Food Studies</option></select>
+      <select id="status" onchange="renderTasks()"><option value="">All status</option><option value="pending">Pending</option><option value="completed">Completed</option></select>
+      <select id="priority" onchange="renderTasks()"><option value="">All priorities</option><option>High</option><option>Medium</option><option>Low</option></select>
+    </div>
+    <div id="taskList"></div>
+  </section>
+
+  <section id="calendar" class="page">
+    <div class="heading"><div><h1>Calendar</h1><p>View upcoming deadlines.</p></div></div>
+    <section class="panel">
+      <div class="calendar-head"><button class="icon-btn" onclick="moveMonth(-1)">‹</button><h2 id="monthTitle"></h2><button class="icon-btn" onclick="moveMonth(1)">›</button></div>
+      <div id="calendarGrid" class="calendar-grid"></div>
+      <p class="legend">High · Medium · Low priority are shown with different labels.</p>
+    </section>
+    <section class="panel"><h2 id="selectedTitle">Selected date</h2><div id="selectedTasks"></div></section>
+  </section>
+
+  <section id="progress" class="page">
+    <div class="heading"><div><h1>Progress</h1><p>Track overall and subject progress.</p></div></div>
+    <div class="stats">
+      <article><span>Total Tasks</span><b id="total">0</b></article>
+      <article><span>Completed</span><b id="pCompleted">0</b></article>
+      <article><span>Pending</span><b id="pPending">0</b></article>
+      <article><span>Overdue</span><b id="pOverdue">0</b></article>
+    </div>
+    <section class="panel"><h2>Overall completion</h2><div class="bar"><i id="bigBar"></i></div><b id="bigLabel">0%</b></section>
+    <section class="panel"><h2>Progress by subject</h2><div id="subjectProgress"></div></section>
+  </section>
+
+  <section id="reminders" class="page">
+    <div class="heading"><div><h1>Reminders</h1><p>Reminders are shown inside the app.</p></div></div>
+    <section class="panel">
+      <div class="setting"><div><b>In-app reminders</b><small>Show deadline reminders</small></div><label class="switch"><input id="remindersOn" type="checkbox" checked onchange="saveSettings()"><span></span></label></div>
+      <div class="setting"><div><b>Default reminder</b><small>Used for new tasks</small></div><select id="defaultReminder" onchange="saveSettings()"><option>1 day before</option><option>2 days before</option><option>1 week before</option></select></div>
+    </section>
+    <div id="reminderList"></div>
+  </section>
+
+  <section id="profile" class="page">
+    <div class="heading"><div><h1>Profile & Settings</h1><p>Manage your preferences.</p></div></div>
+    <section class="panel"><h2>Profile information</h2><p><b>Student</b><br>student@school.edu.au</p></section>
+    <section class="panel"><h2>My subjects</h2><div class="chips"><span>English</span><span>Mathematics</span><span>Biology</span><span>Computing</span><span>Geography</span><span>Food Studies</span></div></section>
+    <section class="panel"><h2>Appearance</h2><div class="setting"><div><b>Dark mode</b><small>Alternative colour theme</small></div><label class="switch"><input id="profileDark" type="checkbox" onchange="toggleThemeProfile()"><span></span></label></div></section>
+    <section class="panel"><h2>Help & About</h2><p>This is a Year 11 Applied Computing functional prototype.</p><p class="muted">Only essential task information is stored locally in this prototype.</p></section>
+  </section>
+</main>
+
+<nav class="nav">
+  <button data-target="home" onclick="show('home')">⌂<span>Home</span></button>
+  <button data-target="calendar" onclick="show('calendar')">▦<span>Calendar</span></button>
+  <button data-target="tasks" onclick="show('tasks')">☑<span>Tasks</span></button>
+  <button data-target="progress" onclick="show('progress')">▥<span>Progress</span></button>
+  <button data-target="profile" onclick="show('profile')">◯<span>Profile</span></button>
+</nav>
+
+<div id="modal" class="modal hidden">
+  <div class="modal-card">
+    <div class="modal-head"><h2>Add New Task</h2><button class="icon-btn" onclick="closeModal()">✕</button></div>
+    <form id="taskForm">
+      <label>Task title *<input id="title" required placeholder="e.g. Biology SAC revision"></label>
+      <div class="form2">
+        <label>Subject *<select id="newSubject" required><option value="">Choose a subject</option><option>English</option><option>Mathematics</option><option>Biology</option><option>Computing</option><option>Geography</option><option>Food Studies</option></select></label>
+        <label>Priority<select id="newPriority"><option>Medium</option><option>High</option><option>Low</option></select></label>
+      </div>
+      <label>Description<textarea id="description" rows="3"></textarea></label>
+      <div class="form2">
+        <label>Due date *<input id="date" type="date" required></label>
+        <label>Due time *<input id="time" type="time" value="09:00" required></label>
+      </div>
+      <label>Reminder<select id="newReminder"><option>1 day before</option><option>2 days before</option><option>1 week before</option></select></label>
+      <div class="modal-actions"><button type="button" class="secondary" onclick="closeModal()">Cancel</button><button class="primary">Save Task</button></div>
+    </form>
+  </div>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
